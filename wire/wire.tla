@@ -8,11 +8,20 @@ variables
     sender = "alice",
     receiver = "bob",
     amount = 3;
+
+define
+    NoOverdrafts == \A p \in people: acc[p] >= 0
+end define;
+
 begin
     skip;
 end algorithm; *)
 \* BEGIN TRANSLATION
 VARIABLES people, acc, sender, receiver, amount, pc
+
+(* define statement *)
+NoOverdrafts == \A p \in people: acc[p] >= 0
+
 
 vars == << people, acc, sender, receiver, amount, pc >>
 
