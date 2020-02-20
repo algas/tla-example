@@ -14,7 +14,10 @@ define
 end define;
 
 begin
-    skip;
+    Withdraw:
+        acc[sender] := acc[sender] - amount;
+    Deposit:
+        acc[receiver] := acc[receiver] + amount;
 end algorithm; *)
 \* BEGIN TRANSLATION
 VARIABLES people, acc, sender, receiver, amount, pc
@@ -31,17 +34,22 @@ Init == (* Global variables *)
         /\ sender = "alice"
         /\ receiver = "bob"
         /\ amount = 3
-        /\ pc = "Lbl_1"
+        /\ pc = "Withdraw"
 
-Lbl_1 == /\ pc = "Lbl_1"
-         /\ TRUE
-         /\ pc' = "Done"
-         /\ UNCHANGED << people, acc, sender, receiver, amount >>
+Withdraw == /\ pc = "Withdraw"
+            /\ acc' = [acc EXCEPT ![sender] = acc[sender] - amount]
+            /\ pc' = "Deposit"
+            /\ UNCHANGED << people, sender, receiver, amount >>
+
+Deposit == /\ pc = "Deposit"
+           /\ acc' = [acc EXCEPT ![receiver] = acc[receiver] + amount]
+           /\ pc' = "Done"
+           /\ UNCHANGED << people, sender, receiver, amount >>
 
 (* Allow infinite stuttering to prevent deadlock on termination. *)
 Terminating == pc = "Done" /\ UNCHANGED vars
 
-Next == Lbl_1
+Next == Withdraw \/ Deposit
            \/ Terminating
 
 Spec == Init /\ [][Next]_vars
