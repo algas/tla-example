@@ -4,24 +4,30 @@ EXTENDS Integers
 (*--algorithm wire
 variables
     people = {"alice", "bob"},
-    acc = [p \in people |-> 5];
+    acc = [p \in people |-> 5],
+    sender = "alice",
+    receiver = "bob",
+    amount = 3;
 begin
     skip;
 end algorithm; *)
 \* BEGIN TRANSLATION
-VARIABLES people, acc, pc
+VARIABLES people, acc, sender, receiver, amount, pc
 
-vars == << people, acc, pc >>
+vars == << people, acc, sender, receiver, amount, pc >>
 
 Init == (* Global variables *)
         /\ people = {"alice", "bob"}
         /\ acc = [p \in people |-> 5]
+        /\ sender = "alice"
+        /\ receiver = "bob"
+        /\ amount = 3
         /\ pc = "Lbl_1"
 
 Lbl_1 == /\ pc = "Lbl_1"
          /\ TRUE
          /\ pc' = "Done"
-         /\ UNCHANGED << people, acc >>
+         /\ UNCHANGED << people, acc, sender, receiver, amount >>
 
 (* Allow infinite stuttering to prevent deadlock on termination. *)
 Terminating == pc = "Done" /\ UNCHANGED vars
