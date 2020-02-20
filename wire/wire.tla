@@ -2,19 +2,26 @@
 EXTENDS Integers
 
 (*--algorithm wire
+variables
+    people = {"alice", "bob"},
+    acc = [p \in people |-> 5];
 begin
     skip;
 end algorithm; *)
 \* BEGIN TRANSLATION
-VARIABLE pc
+VARIABLES people, acc, pc
 
-vars == << pc >>
+vars == << people, acc, pc >>
 
-Init == /\ pc = "Lbl_1"
+Init == (* Global variables *)
+        /\ people = {"alice", "bob"}
+        /\ acc = [p \in people |-> 5]
+        /\ pc = "Lbl_1"
 
 Lbl_1 == /\ pc = "Lbl_1"
          /\ TRUE
          /\ pc' = "Done"
+         /\ UNCHANGED << people, acc >>
 
 (* Allow infinite stuttering to prevent deadlock on termination. *)
 Terminating == pc = "Done" /\ UNCHANGED vars
