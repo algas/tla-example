@@ -7,7 +7,7 @@ variables
     acc = [p \in people |-> 5],
     sender = "alice",
     receiver = "bob",
-    amount = 3;
+    amount \in 1..6;
 
 define
     NoOverdrafts == \A p \in people: acc[p] >= 0
@@ -33,7 +33,7 @@ Init == (* Global variables *)
         /\ acc = [p \in people |-> 5]
         /\ sender = "alice"
         /\ receiver = "bob"
-        /\ amount = 3
+        /\ amount \in 1..6
         /\ pc = "Withdraw"
 
 Withdraw == /\ pc = "Withdraw"
