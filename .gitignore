@@ -1,3 +1,4 @@
 states/
 *.old
 *.out
+.DS_Store
