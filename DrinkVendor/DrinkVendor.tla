@@ -1,24 +1,44 @@
 ---- MODULE DrinkVendor ----
-EXTENDS Integers
-VARIABLES coin, drink, money
+EXTENDS Integers, TLC
+(*--algorithm DrinkVendor
+variables
+    drink = 0,
+    money = 100;
 
-TypeOK == /\ coin = {100}
-          /\ drink \in {0, 1}
-          /\ money \in {0, 100}
+begin
+    while TRUE do
+        if money > 0 then
+            money := 0;
+            drink := 1;
+        else
+            money := 100;
+            drink := 0;
+        end if;
+        assert money \in {0, 100};
+        assert drink \in {0, 1};
+    end while;
+end algorithm; *)
+\* BEGIN TRANSLATION
+VARIABLES drink, money
 
-Init == /\ coin = 100
+vars == << drink, money >>
+
+Init == (* Global variables *)
         /\ drink = 0
-        /\ money = 0
+        /\ money = 100
 
-First == /\ drink' = 0
-         /\ money' = 100
-         /\ coin' = coin
+Next == /\ IF money > 0
+              THEN /\ money' = 0
+                   /\ drink' = 1
+              ELSE /\ money' = 100
+                   /\ drink' = 0
+        /\ Assert(money' \in {0, 100}, 
+                  "Failure of assertion at line 17, column 9.")
+        /\ Assert(drink' \in {0, 1}, 
+                  "Failure of assertion at line 18, column 9.")
 
-Second == /\ drink' = 1
-          /\ money' = 0
-          /\ coin' = coin
+Spec == Init /\ [][Next]_vars
 
-Next == \/ First
-        \/ Second
+\* END TRANSLATION
 
 ====
